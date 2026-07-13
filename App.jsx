@@ -15,8 +15,8 @@ const CSS = `
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-html,body{overflow-x:hidden;background:var(--ink)}
-.app{font-family:'Figtree',system-ui,sans-serif;color:var(--porcelain);line-height:1.6;overflow-x:hidden}
+html,body{overflow-x:clip;background:var(--ink)}
+.app{font-family:'Figtree',system-ui,sans-serif;color:var(--porcelain);line-height:1.6;overflow-x:clip}
 .disp{font-family:'Bricolage Grotesque',serif}
 .mono{font-family:'IBM Plex Mono',monospace}
 .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
@@ -58,19 +58,68 @@ html,body{overflow-x:hidden;background:var(--ink)}
 .omenu-side .blk{margin-bottom:26px}
 .omenu-side .mono{color:var(--glow)}
 
-/* ---------- hero ---------- */
-.hero{position:relative;min-height:190vh}
-.hero-canvas{position:sticky;top:0;height:100vh;width:100%}
-.hero-canvas canvas{display:block}
-.hero-copy{position:absolute;inset:0;display:flex;align-items:center;pointer-events:none}
-.hero-copy .wrap{width:100%}
+/* ---------- scroll story (900vh, scroll = playhead, helix owns the first ~42%) ---------- */
+.story{position:relative;height:900vh}
+.story-stick{position:sticky;top:0;height:100vh;overflow:hidden}
+.story-stick canvas{position:absolute;inset:0;display:block}
+
+/* ---------- vital line — the page's pulse (signature) ---------- */
+.vital{position:fixed;left:22px;top:0;bottom:0;width:2px;z-index:55;pointer-events:none}
+.vital .track{position:absolute;inset:0;background:rgba(95,212,207,.14)}
+.vital .fill{position:absolute;top:0;left:0;right:0;height:0%;background:linear-gradient(to bottom,transparent,var(--glow) 30%,var(--glow));box-shadow:0 0 12px rgba(95,212,207,.55)}
+.vital .tip{position:absolute;left:50%;top:0;width:10px;height:10px;border-radius:50%;background:var(--glow);transform:translate(-50%,-50%);box-shadow:0 0 16px var(--glow)}
+.vital .tip::after{content:"";position:absolute;inset:-7px;border-radius:50%;border:1.5px solid rgba(95,212,207,.6);animation:vpulse 1.6s ease-out infinite}
+@keyframes vpulse{0%{transform:scale(.4);opacity:1}100%{transform:scale(1.7);opacity:0}}
+@media(max-width:900px){.vital{left:10px}}
+
+/* ---------- marquee ---------- */
+.marq{background:var(--ink);border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);overflow:hidden;position:relative;z-index:6;padding:20px 0}
+.marq-in{display:flex;gap:56px;white-space:nowrap;width:max-content;animation:marq 38s linear infinite}
+.marq span{font-family:'Bricolage Grotesque';font-weight:600;font-size:15px;letter-spacing:.24em;text-transform:uppercase;color:rgba(247,246,242,.5);display:flex;align-items:center;gap:56px}
+.marq b{color:var(--glow);font-weight:600}
+@keyframes marq{to{transform:translateX(-50%)}}
+
+/* ---------- ECG self-drawing line in stats ---------- */
+.ecgline{display:block;width:100%;height:90px;margin:-10px 0 34px;overflow:visible}
+.ecgline path{fill:none;stroke:var(--klinik);stroke-width:2;filter:drop-shadow(0 0 6px rgba(23,145,155,.4))}
+.ecgline circle{fill:var(--gold)}
+
+/* ---------- department scanner ---------- */
+.dept-wrap{position:relative;padding-left:34px}
+.dept-track{position:absolute;left:9px;top:0;bottom:0;width:2px;background:var(--line)}
+.dept-fill{position:absolute;left:9px;top:0;width:2px;height:0;background:linear-gradient(to bottom,var(--klinik),var(--gold));box-shadow:0 0 8px rgba(14,110,119,.4)}
+.dept-row{position:relative;border-top:1px solid var(--line);display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:22px;padding:26px 6px;cursor:pointer;transition:background .25s,padding .25s,transform .5s cubic-bezier(.2,.6,.2,1),opacity .5s;text-align:left;background:none;border-left:0;border-right:0;border-bottom:0;width:100%;color:var(--deep)}
+.dept-row::before{content:"";position:absolute;left:-31px;top:50%;width:10px;height:10px;border-radius:50%;background:var(--line);transform:translateY(-50%) scale(.7);transition:background .3s,transform .3s,box-shadow .3s}
+.dept-row.live::before{background:var(--gold);transform:translateY(-50%) scale(1);box-shadow:0 0 12px rgba(201,150,75,.7)}
+.dept-row.live{background:linear-gradient(90deg,rgba(14,110,119,.05),transparent 60%)}
+.dept-row.live .no{color:var(--gold)}
+.dept-row:last-child{border-bottom:1px solid var(--line)}
+.dept-row:hover{background:var(--paper);padding-left:18px}
+.dept-row .no{font-family:'IBM Plex Mono';font-size:12.5px;color:rgba(201,150,75,.55);transition:color .3s}
+.dept-row b{font-family:'Bricolage Grotesque';font-weight:700;font-size:clamp(19px,2.6vw,28px);letter-spacing:-.02em;display:block}
+.dept-row span{display:block;font-size:13.5px;color:var(--muted);margin-top:3px}
+.dept-row .arr{font-size:20px;color:var(--klinik);transform:translateX(-8px);opacity:0;transition:transform .25s,opacity .25s}
+.dept-row:hover .arr{transform:none;opacity:1}
+.dept-row.hl b{color:var(--klinik)}
+
+/* ---------- tilt cards ---------- */
+.tilt{transform-style:preserve-3d;transition:transform .35s cubic-bezier(.2,.6,.2,1),box-shadow .35s;will-change:transform}
+.tilt:hover{box-shadow:0 26px 60px rgba(10,42,49,.16)}
+.tilt .date,.tilt b,.tilt p{transform:translateZ(24px)}
+
+/* ---------- gyn breathing + parallax ---------- */
+.feature::after{content:"";position:absolute;left:-15%;bottom:-40%;width:70%;height:120%;background:radial-gradient(closest-side,rgba(201,150,75,.16),transparent 70%);animation:breathe 6s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(.92);opacity:.7}50%{transform:scale(1.06);opacity:1}}
+.f-col-l,.f-col-r{will-change:transform}
+.act{position:absolute;inset:0;display:flex;align-items:center;opacity:0;pointer-events:none;will-change:opacity,transform}
+.act .wrap{width:100%}
 .eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:var(--glow);margin-bottom:20px;display:flex;align-items:center;gap:12px}
 .eyebrow::before{content:"";width:44px;height:1px;background:var(--glow)}
-.hero h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:clamp(44px,8.4vw,104px);line-height:.98;letter-spacing:-.035em;max-width:11ch}
-.hero h1 .thin{font-weight:300;color:rgba(247,246,242,.85)}
-.hero h1 .accent{background:linear-gradient(100deg,var(--glow),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p{margin-top:26px;max-width:46ch;font-size:clamp(15px,1.6vw,18px);color:rgba(247,246,242,.78)}
-.hero-cta{margin-top:36px;display:flex;gap:14px;flex-wrap:wrap;pointer-events:auto}
+.act h1{font-family:'Bricolage Grotesque';font-weight:800;font-size:clamp(44px,8.4vw,104px);line-height:.98;letter-spacing:-.035em;max-width:11ch}
+.act h1 .thin{font-weight:300;color:rgba(247,246,242,.85)}
+.act h1 .accent{background:linear-gradient(100deg,var(--glow),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent}
+.act p.lead{margin-top:26px;max-width:46ch;font-size:clamp(15px,1.6vw,18px);color:rgba(247,246,242,.78)}
+.hero-cta{margin-top:36px;display:flex;gap:14px;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:15px 28px;font-size:15px;font-weight:700;cursor:pointer;border:0;transition:transform .2s,box-shadow .2s,background .2s;text-decoration:none}
 .btn.pri{background:var(--porcelain);color:var(--ink)}
 .btn.pri:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(95,212,207,.28)}
@@ -79,9 +128,14 @@ html,body{overflow-x:hidden;background:var(--ink)}
 .scroll-hint{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:rgba(247,246,242,.55);display:flex;flex-direction:column;align-items:center;gap:10px}
 .scroll-hint i{width:1px;height:44px;background:linear-gradient(to bottom,var(--glow),transparent);display:block;animation:drip 2s ease-in-out infinite}
 @keyframes drip{0%{transform:scaleY(0);transform-origin:top}55%{transform:scaleY(1);transform-origin:top}56%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
-.hero-stage2{position:absolute;top:100vh;left:0;right:0;height:90vh;display:flex;align-items:center;pointer-events:none}
-.hero-stage2 .statement{font-family:'Bricolage Grotesque';font-weight:600;font-size:clamp(24px,3.8vw,44px);line-height:1.24;letter-spacing:-.02em;max-width:24ch;color:var(--porcelain)}
-.hero-stage2 .statement em{font-style:normal;color:var(--glow)}
+.statement{font-family:'Bricolage Grotesque';font-weight:600;font-size:clamp(26px,4.2vw,50px);line-height:1.2;letter-spacing:-.02em;max-width:22ch;color:var(--porcelain)}
+.statement em{font-style:normal;color:var(--glow)}
+.statement .gold{font-style:normal;color:var(--gold)}
+.act .sub{margin-top:18px;font-size:15px;color:rgba(247,246,242,.65);max-width:44ch}
+.story-dots{position:absolute;right:26px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px}
+.story-dots i{width:6px;height:6px;border-radius:50%;background:rgba(247,246,242,.25);transition:background .3s,height .3s;display:block}
+.story-dots i.on{background:var(--glow);height:22px;border-radius:4px}
+@media(max-width:700px){.story-dots{right:14px}}
 
 /* ---------- light body ---------- */
 .body-light{background:var(--porcelain);color:var(--deep);border-radius:34px 34px 0 0;position:relative;z-index:5;box-shadow:0 -30px 80px rgba(0,0,0,.5)}
@@ -105,17 +159,7 @@ html,body{overflow-x:hidden;background:var(--ink)}
 .stat .n small{font-size:.5em;color:var(--gold);vertical-align:super}
 .stat .l{margin-top:10px;font-size:13.5px;color:var(--muted);letter-spacing:.02em}
 
-/* departments — hover gallery */
-.dept-row{border-top:1px solid var(--line);display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:22px;padding:26px 6px;cursor:pointer;transition:background .25s,padding .25s;text-align:left;background:none;border-left:0;border-right:0;border-bottom:0;width:100%;color:var(--deep)}
-.dept-row:last-child{border-bottom:1px solid var(--line)}
-.dept-row:hover{background:var(--paper);padding-left:18px}
-.dept-row .no{font-family:'IBM Plex Mono';font-size:12.5px;color:var(--gold)}
-.dept-row b{font-family:'Bricolage Grotesque';font-weight:700;font-size:clamp(19px,2.6vw,28px);letter-spacing:-.02em;display:block}
-.dept-row span{display:block;font-size:13.5px;color:var(--muted);margin-top:3px}
-.dept-row .arr{font-size:20px;color:var(--klinik);transform:translateX(-8px);opacity:0;transition:transform .25s,opacity .25s}
-.dept-row:hover .arr{transform:none;opacity:1}
-.dept-row.hl{background:linear-gradient(90deg,rgba(201,150,75,.09),transparent 55%)}
-.dept-row.hl b{color:var(--klinik)}
+/* departments — scanner version defined above */
 
 /* gyn feature — parallax split */
 .feature{background:var(--deep);color:var(--porcelain);border-radius:34px;overflow:hidden;position:relative}
@@ -368,69 +412,159 @@ function ChatWidget({ lang }) {
 }
 
 /* ------------------ 3D helix hero ------------------ */
-function HelixCanvas() {
-  const mountRef = useRef(null);
+/* ------------------ scroll-story 3D stage ------------------ */
+/* One particle system, five keyframed shapes. Scroll = the playhead:
+   helix (wide) → helix (traveled down the strand, closer) → ECG heartbeat → cell (new life) → core (one Klinikum) */
+const N_PARTICLES = 2400;
+
+function buildHelix(phaseShift, yShift, radius) {
+  const out = new Float32Array(N_PARTICLES * 3);
+  const TURNS = 5.5, HEIGHT = 42; // tall strand — enough material for a long descent
+  for (let i = 0; i < N_PARTICLES; i++) {
+    const k = i * 3;
+    const r = (i * 2654435761 % 1000) / 1000; // deterministic so both helix frames pair particle-for-particle
+    const t = ((i * 7919) % N_PARTICLES) / N_PARTICLES;
+    const jx = (((i * 104729) % 100) / 100 - 0.5) * 0.14;
+    const jz = (((i * 224737) % 100) / 100 - 0.5) * 0.14;
+    if (r < 0.84) {
+      const strand = r < 0.42 ? 0 : Math.PI;
+      const ang = t * Math.PI * 2 * TURNS + strand + phaseShift;
+      out[k] = Math.cos(ang) * radius + jx;
+      out[k + 1] = (t - 0.5) * HEIGHT + yShift;
+      out[k + 2] = Math.sin(ang) * radius + jz;
+    } else {
+      const tt = Math.floor(t * 46) / 46;
+      const ang = tt * Math.PI * 2 * TURNS + phaseShift;
+      const s = (r - 0.84) / 0.16 * 2 - 1;
+      out[k] = Math.cos(ang) * radius * s;
+      out[k + 1] = (tt - 0.5) * HEIGHT + yShift;
+      out[k + 2] = Math.sin(ang) * radius * s;
+    }
+  }
+  return out;
+}
+
+function buildShapes() {
+  // Acts 0+1: the same strand, but the second frame is phase-rotated and lifted —
+  // morphing between them reads as the camera travelling DOWN the DNA.
+  const helixA = buildHelix(0, 0, 2.1);
+  const helixB = buildHelix(Math.PI * 2.2, 9.5, 2.5);
+
+  const ecg = new Float32Array(N_PARTICLES * 3);
+  const cell = new Float32Array(N_PARTICLES * 3);
+  const core = new Float32Array(N_PARTICLES * 3);
+
+  // ECG heartbeat line (two PQRST pulses across the screen)
+  const pulse = (u) => {
+    if (u < 0.14) return Math.sin(u / 0.14 * Math.PI) * 0.32;
+    if (u < 0.22) return 0;
+    if (u < 0.26) return -((u - 0.22) / 0.04) * 0.5;
+    if (u < 0.32) return -0.5 + ((u - 0.26) / 0.06) * 3.4;
+    if (u < 0.38) return 2.9 - ((u - 0.32) / 0.06) * 3.7;
+    if (u < 0.46) return -0.8 + ((u - 0.38) / 0.08) * 0.8;
+    if (u < 0.72) return Math.sin((u - 0.46) / 0.26 * Math.PI) * 0.6;
+    return 0;
+  };
+  for (let i = 0; i < N_PARTICLES; i++) {
+    const k = i * 3;
+    const t = i / N_PARTICLES;
+    const x = (t - 0.5) * 19;
+    const beat = (t * 2) % 1;
+    ecg[k] = x + (Math.random() - 0.5) * 0.05;
+    ecg[k + 1] = pulse(beat) * 1.6 + (Math.random() - 0.5) * 0.16;
+    ecg[k + 2] = (Math.random() - 0.5) * 0.5;
+  }
+
+  // Cell: fibonacci-sphere membrane + dense nucleus
+  const GA = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < N_PARTICLES; i++) {
+    const k = i * 3;
+    if (i % 5 === 0) {
+      const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
+      const rr = 1.05 * Math.cbrt(Math.random());
+      cell[k] = rr * Math.sin(ph) * Math.cos(th);
+      cell[k + 1] = rr * Math.sin(ph) * Math.sin(th);
+      cell[k + 2] = rr * Math.cos(ph);
+    } else {
+      const y = 1 - (i / (N_PARTICLES - 1)) * 2;
+      const rad = Math.sqrt(1 - y * y);
+      const th = GA * i;
+      const R = 3.3 + (Math.random() - 0.5) * 0.12;
+      cell[k] = Math.cos(th) * rad * R;
+      cell[k + 1] = y * R;
+      cell[k + 2] = Math.sin(th) * rad * R;
+    }
+  }
+
+  // Core: dense glowing gaussian ball
+  for (let i = 0; i < N_PARTICLES; i++) {
+    const k = i * 3;
+    const g = () => (Math.random() + Math.random() + Math.random() - 1.5) * 0.75;
+    core[k] = g(); core[k + 1] = g(); core[k + 2] = g();
+  }
+
+  return [helixA, helixB, ecg, cell, core];
+}
+
+const smooth = (x) => x * x * (3 - 2 * x);
+/* Non-uniform act timing: the helix descent owns the first 42% of the story. */
+const KEYTIMES = [0, 0.42, 0.62, 0.80, 1];
+function segFromProg(prog) {
+  for (let i = 0; i < KEYTIMES.length - 1; i++) {
+    if (prog <= KEYTIMES[i + 1] || i === KEYTIMES.length - 2) {
+      const local = (prog - KEYTIMES[i]) / (KEYTIMES[i + 1] - KEYTIMES[i]);
+      return i + Math.min(Math.max(local, 0), 0.9999);
+    }
+  }
+  return KEYTIMES.length - 2 + 0.9999;
+}
+const ACT_COLORS = [
+  [0x5f / 255, 0xd4 / 255, 0xcf / 255],  // helix wide — teal
+  [0x8f / 255, 0xe0 / 255, 0xdb / 255],  // helix traveled — lighter teal
+  [0xf7 / 255, 0xf6 / 255, 0xf2 / 255],  // ECG — porcelain
+  [0xc9 / 255, 0x96 / 255, 0x4b / 255],  // cell — gold
+  [0x5f / 255, 0xd4 / 255, 0xcf / 255],  // core — teal
+];
+const CAM_Z = [14.5, 11, 14.5, 10.5, 7.5];
+const CAM_Y = [0, -5.5, 0, 0, 0];         // camera dives DOWN while the helix travels
+const ROT_SPEED = [0.22, 0.3, 0.015, 0.1, 0.4];
+const HELIX_TRAVEL = 13;                   // cloud streams upward by this much over the helix acts → you descend the strand
+const N_ACTS = 5;
+
+function StoryStage({ lang, goto }) {
+  const storyRef = useRef(null);
+  const stickRef = useRef(null);
+  const actRefs = useRef([]);
+  const dotRefs = useRef([]);
+  const t = T[lang];
+
   useEffect(() => {
-    const mount = mountRef.current;
-    if (!mount) return;
+    const stick = stickRef.current, story = storyRef.current;
+    if (!stick || !story) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x07181d, 0.055);
-    const camera = new THREE.PerspectiveCamera(50, mount.clientWidth / mount.clientHeight, 0.1, 100);
-    camera.position.set(0, 0, 13);
+    scene.fog = new THREE.FogExp2(0x07181d, 0.045);
+    const camera = new THREE.PerspectiveCamera(50, stick.clientWidth / stick.clientHeight, 0.1, 100);
+    camera.position.set(0, 0, CAM_Z[0]);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(mount.clientWidth, mount.clientHeight);
-    mount.appendChild(renderer.domElement);
+    renderer.setSize(stick.clientWidth, stick.clientHeight);
+    stick.insertBefore(renderer.domElement, stick.firstChild);
 
-    // lights
-    scene.add(new THREE.AmbientLight(0x88aab0, 0.55));
-    const key = new THREE.PointLight(0x5fd4cf, 1.6, 60); key.position.set(8, 6, 10); scene.add(key);
-    const rim = new THREE.PointLight(0xc9964b, 0.9, 60); rim.position.set(-10, -4, 6); scene.add(rim);
+    const shapes = buildShapes();
+    const geo = new THREE.BufferGeometry();
+    const posArr = new Float32Array(shapes[0]); // start as helix
+    geo.setAttribute("position", new THREE.BufferAttribute(posArr, 3));
+    const mat = new THREE.PointsMaterial({ color: new THREE.Color(...ACT_COLORS[0]), size: 0.075, transparent: true, opacity: 0.95, sizeAttenuation: true, depthWrite: false, blending: THREE.AdditiveBlending });
+    const cloud = new THREE.Points(geo, mat);
+    cloud.rotation.z = 0.22;
+    scene.add(cloud);
 
-    // helix group
-    const helix = new THREE.Group();
-    const sphereGeo = new THREE.SphereGeometry(0.16, 20, 20);
-    const matA = new THREE.MeshStandardMaterial({ color: 0x17919b, metalness: 0.35, roughness: 0.25, emissive: 0x0a3a3f, emissiveIntensity: 0.55 });
-    const matB = new THREE.MeshStandardMaterial({ color: 0xe8f4f2, metalness: 0.2, roughness: 0.35, emissive: 0x113338, emissiveIntensity: 0.25 });
-    const matRung = new THREE.MeshStandardMaterial({ color: 0x2a6b72, metalness: 0.3, roughness: 0.5, transparent: true, opacity: 0.75 });
-    const rungGeo = new THREE.CylinderGeometry(0.035, 0.035, 1, 8);
-
-    const N = 70, turns = 3.4, height = 22, radius = 2.1;
-    for (let i = 0; i < N; i++) {
-      const t = i / (N - 1);
-      const ang = t * Math.PI * 2 * turns;
-      const y = (t - 0.5) * height;
-      const x1 = Math.cos(ang) * radius, z1 = Math.sin(ang) * radius;
-      const x2 = Math.cos(ang + Math.PI) * radius, z2 = Math.sin(ang + Math.PI) * radius;
-      const s1 = new THREE.Mesh(sphereGeo, matA); s1.position.set(x1, y, z1); helix.add(s1);
-      const s2 = new THREE.Mesh(sphereGeo, matB); s2.position.set(x2, y, z2); helix.add(s2);
-      if (i % 3 === 0) {
-        const rung = new THREE.Mesh(rungGeo, matRung);
-        rung.position.set(0, y, 0);
-        rung.scale.y = radius * 2;
-        rung.rotation.z = Math.PI / 2;
-        rung.rotation.y = -ang;
-        helix.add(rung);
-      }
-    }
-    helix.rotation.z = 0.28;
-    scene.add(helix);
-
-    // ambient particles
-    const pGeo = new THREE.BufferGeometry();
-    const pCount = 260;
-    const pos = new Float32Array(pCount * 3);
-    for (let i = 0; i < pCount * 3; i += 3) {
-      pos[i] = (Math.random() - 0.5) * 34;
-      pos[i + 1] = (Math.random() - 0.5) * 30;
-      pos[i + 2] = (Math.random() - 0.5) * 22 - 4;
-    }
-    pGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    const points = new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0x5fd4cf, size: 0.055, transparent: true, opacity: 0.6 }));
-    scene.add(points);
+    // per-particle wobble phase for organic life
+    const phase = new Float32Array(N_PARTICLES);
+    for (let i = 0; i < N_PARTICLES; i++) phase[i] = Math.random() * Math.PI * 2;
 
     let mouseX = 0, mouseY = 0;
     const onMouse = (e) => {
@@ -438,30 +572,101 @@ function HelixCanvas() {
       mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
     };
     window.addEventListener("mousemove", onMouse);
-
     const onResize = () => {
-      camera.aspect = mount.clientWidth / mount.clientHeight;
+      camera.aspect = stick.clientWidth / stick.clientHeight;
       camera.updateProjectionMatrix();
-      renderer.setSize(mount.clientWidth, mount.clientHeight);
+      renderer.setSize(stick.clientWidth, stick.clientHeight);
     };
     window.addEventListener("resize", onResize);
 
-    let raf, tPrev = 0;
-    const animate = (t) => {
+    let raf, tPrev = 0, time = 0;
+    const col = new THREE.Color();
+
+    const animate = (tNow) => {
       raf = requestAnimationFrame(animate);
-      const dt = Math.min((t - tPrev) / 1000, 0.05); tPrev = t;
-      const scrollY = window.scrollY || 0;
-      const prog = Math.min(scrollY / (window.innerHeight * 1.6), 1); // over hero span
+      const dt = Math.min((tNow - tPrev) / 1000, 0.05); tPrev = tNow; time += dt;
+
+      // scroll progress across the whole story (0..1) — this IS the playhead
+      const vh = window.innerHeight;
+      const total = story.offsetHeight - vh;
+      const storyRect = story.getBoundingClientRect();
+      const y = Math.min(Math.max(-storyRect.top, 0), total);
+      const prog = total > 0 ? y / total : 0;
+
+      // Belt & braces: if position:sticky is broken by the environment
+      // (e.g. an ancestor with overflow:hidden), pin the stage manually.
+      const inStory = storyRect.top <= 0 && storyRect.bottom >= vh;
+      const stickRect = stick.getBoundingClientRect();
+      const stickyBroken = inStory && Math.abs(stickRect.top) > 2;
+      if (stickyBroken && stick.style.position !== "fixed") {
+        stick.style.position = "fixed";
+        stick.style.top = "0"; stick.style.left = "0"; stick.style.right = "0";
+      } else if (!inStory && stick.style.position === "fixed") {
+        stick.style.position = ""; stick.style.top = ""; stick.style.left = ""; stick.style.right = "";
+        stick.style.transform = storyRect.top < 0 ? `translateY(${total}px)` : "";
+      }
+
+      // which two keyframes are we between? (non-uniform: helix owns the first 42%)
+      const seg = segFromProg(prog);
+      const idx = Math.floor(seg);
+      const local = smooth(seg - idx);
+      const A = shapes[idx], B = shapes[idx + 1];
+
+      // continuous descent: during the helix acts the whole cloud streams upward
+      // past the camera in proportion to scroll — you travel DOWN the strand.
+      const helixT = Math.min(seg / 2, 1);           // 0..1 across both helix segments
+      const streamY = smooth(helixT) * HELIX_TRAVEL * (idx <= 1 ? 1 : Math.max(1 - (seg - 2), 0));
+      cloud.position.y += (streamY - cloud.position.y) * 0.08;
+
+      // morph particles toward blended target (+ gentle wobble)
+      const arr = geo.attributes.position.array;
+      const wob = reduced ? 0 : 0.05;
+      for (let i = 0; i < N_PARTICLES; i++) {
+        const k = i * 3;
+        const tx = A[k] + (B[k] - A[k]) * local;
+        const ty = A[k + 1] + (B[k + 1] - A[k + 1]) * local + Math.sin(time * 1.4 + phase[i]) * wob;
+        const tz = A[k + 2] + (B[k + 2] - A[k + 2]) * local;
+        arr[k] += (tx - arr[k]) * 0.09;
+        arr[k + 1] += (ty - arr[k + 1]) * 0.09;
+        arr[k + 2] += (tz - arr[k + 2]) * 0.09;
+      }
+      geo.attributes.position.needsUpdate = true;
+
+      // color grade between acts
+      const cA = ACT_COLORS[idx], cB = ACT_COLORS[idx + 1];
+      col.setRGB(cA[0] + (cB[0] - cA[0]) * local, cA[1] + (cB[1] - cA[1]) * local, cA[2] + (cB[2] - cA[2]) * local);
+      mat.color.copy(col);
+
+      // ECG act (now index 2) pulses like a live monitor
+      const ecgW = idx === 1 ? local : idx === 2 ? 1 - local : 0;
+      mat.size = 0.075 + ecgW * 0.02 * (1 + Math.sin(time * 6)) + (idx >= 3 ? local * 0.02 : 0);
 
       if (!reduced) {
-        helix.rotation.y += dt * 0.18 + prog * dt * 0.6;
-        helix.position.y = prog * 5.5;               // helix drifts up as you scroll
-        camera.position.z = 13 - prog * 4.2;         // camera dollies in
-        camera.position.x += (mouseX * 1.2 - camera.position.x) * 0.04;
-        camera.position.y += (-mouseY * 0.8 - camera.position.y) * 0.04;
-        camera.lookAt(0, prog * 2.2, 0);
-        points.rotation.y += dt * 0.02;
+        // camera travel (z AND y — it dives down the strand) + parallax
+        const camZ = CAM_Z[idx] + (CAM_Z[idx + 1] - CAM_Z[idx]) * local;
+        const camY = CAM_Y[idx] + (CAM_Y[idx + 1] - CAM_Y[idx]) * local;
+        camera.position.z += (camZ - camera.position.z) * 0.06;
+        camera.position.x += (mouseX * 1.1 - camera.position.x) * 0.04;
+        camera.position.y += (camY - mouseY * 0.8 - camera.position.y) * 0.04;
+        camera.lookAt(0, camY * 0.8, 0);
+        // rotation speed eases between acts (ECG barely rotates so it stays readable)
+        const rs = ROT_SPEED[idx] + (ROT_SPEED[idx + 1] - ROT_SPEED[idx]) * local;
+        cloud.rotation.y += dt * rs;
+        cloud.rotation.z += ((idx <= 1 ? 0.22 : 0) - cloud.rotation.z) * 0.05;
       }
+
+      // act overlay fades + pointer-events, and progress dots — DOM writes in the same loop
+      const center = seg; // 0..4
+      actRefs.current.forEach((el, i) => {
+        if (!el) return;
+        const d = Math.abs(center - i);
+        const o = Math.max(0, 1 - d * 1.25); // wide window: no dead screens between acts
+        el.style.opacity = o.toFixed(3);
+        el.style.transform = `translateY(${(center - i) * -26}px)`;
+        el.style.pointerEvents = o > 0.5 ? "auto" : "none";
+      });
+      dotRefs.current.forEach((el, i) => { if (el) el.classList.toggle("on", Math.round(center) === i); });
+
       renderer.render(scene, camera);
     };
     raf = requestAnimationFrame(animate);
@@ -470,16 +675,150 @@ function HelixCanvas() {
       cancelAnimationFrame(raf);
       window.removeEventListener("mousemove", onMouse);
       window.removeEventListener("resize", onResize);
-      mount.removeChild(renderer.domElement);
-      renderer.dispose();
-      sphereGeo.dispose(); rungGeo.dispose(); pGeo.dispose();
-      matA.dispose(); matB.dispose(); matRung.dispose();
+      stick.removeChild(renderer.domElement);
+      renderer.dispose(); geo.dispose(); mat.dispose();
     };
   }, []);
-  return <div ref={mountRef} className="hero-canvas" aria-hidden="true" />;
+
+  const acts = lang === "de" ? [
+    null, // act 0 = hero markup below
+    { h: [<>Medizin auf <em>Universitätsniveau</em> — im Landkreis zuhause.</>], sub: "Akademisches Lehrkrankenhaus der Technischen Universität München. Wissen, das ankommt, wo Sie leben." },
+    { h: [<>Jede Behandlung beginnt mit <em>Vertrauen</em>.</>], sub: "Wir bauen es — Tag für Tag, Patientin für Patient. Rund um die Uhr, an 365 Tagen." },
+    { h: [<>Rund <span className="gold">600 Mal im Jahr</span> beginnt hier neues Leben.</>], sub: "Geburtshilfe, zertifiziertes Brustzentrum, Frauenmedizin auf Universitätsniveau — mitten im Landkreis. Ab 2028 mit eigener Kinderklinik." },
+    { h: [<>Ein Klinikum. <em>Ganz nah.</em></>], sub: "330 Betten · 11 Fachabteilungen · über 1.000 Menschen für Erding und Dorfen." },
+  ] : [
+    null,
+    { h: [<>Medicine at <em>university level</em> — at home in the district.</>], sub: "Academic teaching hospital of the Technical University of Munich. Knowledge that arrives where you live." },
+    { h: [<>Every treatment begins with <em>trust</em>.</>], sub: "We build it — day by day, patient by patient. Around the clock, 365 days a year." },
+    { h: [<>Around <span className="gold">600 times a year</span>, new life begins here.</>], sub: "Obstetrics, a certified breast center, women's medicine at university level — in the heart of the district. With its own children's clinic from 2028." },
+    { h: [<>One hospital. <em>Close to home.</em></>], sub: "330 beds · 11 departments · over 1,000 people for Erding and Dorfen." },
+  ];
+
+  return (
+    <section className="story" ref={storyRef}>
+      <div className="story-stick" ref={stickRef}>
+        {/* act 0 — hero */}
+        <div className="act" ref={el => actRefs.current[0] = el} style={{ opacity: 1 }}>
+          <div className="wrap">
+            <div className="eyebrow">Klinikum Landkreis Erding · Erding & Dorfen</div>
+            <h1>
+              <span className="accent">{t.heroTitle1}</span><br />
+              <span className="thin">{t.heroTitle2}</span><br />
+              {t.heroTitle3}
+            </h1>
+            <p className="lead">{t.heroText}</p>
+            <div className="hero-cta">
+              <button className="btn pri" onClick={() => goto("depts")}>{t.cta1} →</button>
+              <button className="btn gho" onClick={() => goto("loc")}>{t.cta2}</button>
+            </div>
+          </div>
+          <div className="scroll-hint">{t.scroll}<i /></div>
+        </div>
+        {/* acts 1–3 — statements over the morphing scene */}
+        {acts.slice(1).map((a, i) => (
+          <div className="act" key={i} ref={el => actRefs.current[i + 1] = el}>
+            <div className="wrap">
+              <p className="statement">{a.h}</p>
+              <p className="sub">{a.sub}</p>
+            </div>
+          </div>
+        ))}
+        <div className="story-dots" aria-hidden="true">
+          {[0, 1, 2, 3, 4].map(i => <i key={i} ref={el => dotRefs.current[i] = el} className={i === 0 ? "on" : ""} />)}
+        </div>
+      </div>
+    </section>
+  );
 }
 
-/* ------------------ reveal hook ------------------ */
+/* ------------------ page conductor ------------------ */
+/* One rAF loop drives every scroll-linked element outside the 3D story:
+   the vital line (the page's pulse), the self-drawing ECG, the department
+   scanner, and the Frauenklinik parallax. */
+function PageConductor() {
+  const fillRef = useRef(null);
+  const tipRef = useRef(null);
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
+    let raf;
+    const loop = () => {
+      raf = requestAnimationFrame(loop);
+      const vh = window.innerHeight;
+      const scroller = document.scrollingElement || document.documentElement;
+      const prog = Math.min(scroller.scrollTop / Math.max(scroller.scrollHeight - vh, 1), 1);
+
+      // vital line — the page's pulse
+      if (fillRef.current) fillRef.current.style.height = `${(prog * 100).toFixed(2)}%`;
+      if (tipRef.current) tipRef.current.style.top = `${(prog * 100).toFixed(2)}%`;
+
+      // self-drawing ECG in the stats section
+      const ecg = document.getElementById("ecgpath");
+      if (ecg) {
+        const r = ecg.getBoundingClientRect();
+        const p = Math.min(Math.max((vh * 0.9 - r.top) / (vh * 0.9), 0), 1);
+        ecg.style.strokeDasharray = "1";
+        ecg.style.strokeDashoffset = String(1 - p);
+        const dot = document.getElementById("ecgdot");
+        if (dot && ecg.getTotalLength) {
+          const pt = ecg.getPointAtLength(p * ecg.getTotalLength());
+          dot.setAttribute("cx", pt.x); dot.setAttribute("cy", pt.y);
+          dot.setAttribute("r", p > 0.02 && p < 1 ? "4" : "0");
+        }
+      }
+
+      // department scanner — nodes light up as rows pass the reading line
+      const rows = document.querySelectorAll(".dept-row");
+      let lastLiveBottom = 0;
+      rows.forEach(row => {
+        const r = row.getBoundingClientRect();
+        const c = r.top + r.height / 2;
+        const live = c < vh * 0.62 && r.bottom > 0;
+        row.classList.toggle("live", live && c > vh * 0.1);
+        if (live) lastLiveBottom = Math.max(lastLiveBottom, c);
+      });
+      const wrap = document.querySelector(".dept-wrap");
+      const fill = document.querySelector(".dept-fill");
+      if (wrap && fill) {
+        const wr = wrap.getBoundingClientRect();
+        const h = Math.min(Math.max(vh * 0.62 - wr.top, 0), wr.height);
+        fill.style.height = `${h}px`;
+      }
+
+      // Frauenklinik parallax — the two columns drift at different speeds
+      const feat = document.querySelector(".feature");
+      if (feat) {
+        const r = feat.getBoundingClientRect();
+        const p = Math.min(Math.max((vh - r.top) / (vh + r.height), 0), 1) - 0.5;
+        const l = document.querySelector(".f-col-l"), rt = document.querySelector(".f-col-r");
+        if (l) l.style.transform = `translateY(${(-p * 34).toFixed(1)}px)`;
+        if (rt) rt.style.transform = `translateY(${(p * 46).toFixed(1)}px)`;
+      }
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+  return (
+    <div className="vital" aria-hidden="true">
+      <div className="track" />
+      <div className="fill" ref={fillRef} />
+      <div className="tip" ref={tipRef} />
+    </div>
+  );
+}
+
+/* 3D tilt for cards — physical, cursor-following */
+function tiltMove(e) {
+  const el = e.currentTarget;
+  const r = el.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width - 0.5;
+  const y = (e.clientY - r.top) / r.height - 0.5;
+  el.style.transform = `perspective(900px) rotateY(${(x * 8).toFixed(2)}deg) rotateX(${(-y * 8).toFixed(2)}deg) translateY(-4px)`;
+}
+function tiltLeave(e) { e.currentTarget.style.transform = ""; }
+
+/* ECG path for the stats section (drawn by scroll) */
+const ECG_D = "M0,50 L150,50 L170,42 L190,50 L260,50 L272,58 L284,10 L296,78 L308,44 L340,50 L420,50 L450,38 L480,50 L620,50 L640,42 L660,50 L730,50 L742,58 L754,10 L766,78 L778,44 L810,50 L900,50 L930,38 L960,50 L1120,50";
 function useReveal() {
   useEffect(() => {
     const els = document.querySelectorAll(".rv");
@@ -604,31 +943,20 @@ export default function App() {
         </div>
       </div>
 
-      {/* hero with sticky 3D canvas */}
-      <section className="hero">
-        <HelixCanvas />
-        <div className="hero-copy">
-          <div className="wrap">
-            <div className="eyebrow">{lang === "de" ? "Klinikum Landkreis Erding · Erding & Dorfen" : "Klinikum Landkreis Erding · Erding & Dorfen"}</div>
-            <h1>
-              <span className="accent">{t.heroTitle1}</span><br />
-              <span className="thin">{t.heroTitle2}</span><br />
-              {t.heroTitle3}
-            </h1>
-            <p>{t.heroText}</p>
-            <div className="hero-cta">
-              <button className="btn pri" onClick={() => goto("depts")}>{t.cta1} →</button>
-              <button className="btn gho" onClick={() => goto("loc")}>{t.cta2}</button>
-            </div>
-          </div>
+      {/* 700vh scroll story — scroll is the playhead */}
+      <StoryStage lang={lang} goto={goto} />
+      <PageConductor />
+
+      {/* marquee — editorial band between the story and the practical site */}
+      <div className="marq" aria-hidden="true">
+        <div className="marq-in">
+          {[0, 1].map(k => (
+            <span key={k}>
+              Spitzenmedizin ganz nah <b>·</b> Lehrkrankenhaus der TU München <b>·</b> 330 Betten <b>·</b> Zwei Standorte <b>·</b> ≈600 Geburten im Jahr <b>·</b> Zertifiziertes Brustzentrum <b>·</b> Kinderklinik 2028 <b>·</b>
+            </span>
+          ))}
         </div>
-        <div className="scroll-hint">{t.scroll}<i /></div>
-        <div className="hero-stage2">
-          <div className="wrap">
-            <p className="statement rv">{t.statement[0]}<em>{t.statement[1]}</em>{t.statement[2]}</p>
-          </div>
-        </div>
-      </section>
+      </div>
 
       {/* light body */}
       <div className="body-light">
@@ -639,6 +967,10 @@ export default function App() {
               <div className="kicker">{t.statsK}</div>
               <h2>{t.statsH}</h2>
             </div>
+            <svg className="ecgline" viewBox="0 0 1120 90" preserveAspectRatio="none" aria-hidden="true">
+              <path id="ecgpath" d={ECG_D} pathLength="1" style={{ strokeDasharray: 1, strokeDashoffset: 1 }} />
+              <circle id="ecgdot" cx="0" cy="50" r="0" />
+            </svg>
             <div className="stats rv d1">
               {t.stats.map(([n, suf, l]) => <Stat key={l} n={n} suffix={suf} label={l} />)}
             </div>
@@ -653,7 +985,9 @@ export default function App() {
               <h2>{t.deptH}</h2>
               <p>{t.deptP}</p>
             </div>
-            <div>
+            <div className="dept-wrap">
+              <div className="dept-track" aria-hidden="true" />
+              <div className="dept-fill" aria-hidden="true" />
               {DEPTS.map((d, i) => (
                 <button key={d.de[0]} className={`dept-row rv ${d.hl ? "hl" : ""}`}
                   onClick={() => d.hl ? goto("gyn") : goto("loc")}>
@@ -671,7 +1005,7 @@ export default function App() {
           <div className="wrap">
             <div className="feature rv">
               <div className="feature-in">
-                <div>
+                <div className="f-col-l">
                   <div className="pill">{t.gynPill}</div>
                   <h3>{t.gynH[0]}<em>{t.gynH[1]}</em>{t.gynH[2]}</h3>
                   <p>{t.gynP}</p>
@@ -680,7 +1014,7 @@ export default function App() {
                     <button className="btn gho" onClick={() => goto("sprech")}>{lang === "de" ? "Sprechstunden ansehen" : "See consultation hours"}</button>
                   </div>
                 </div>
-                <div className="f-list">
+                <div className="f-list f-col-r">
                   <div className="f-item rv d1"><b>🎗️ {lang === "de" ? "Zertifiziertes Brustzentrum" : "Certified breast center"}</b>
                     <span>{lang === "de" ? "In Kooperation mit dem Klinikum rechts der Isar der TU München." : "In cooperation with Klinikum rechts der Isar (TU Munich)."}</span></div>
                   <div className="f-item rv d2"><b>👶 {lang === "de" ? "Geburtshilfe & Kreißsaal" : "Obstetrics & delivery"}</b>
@@ -724,7 +1058,7 @@ export default function App() {
             </div>
             <div className="ngrid">
               {NEWS.map((n, i) => (
-                <article className={`ncard rv d${i + 1}`} key={n.d}>
+                <article className={`ncard tilt rv d${i + 1}`} key={n.d} onMouseMove={tiltMove} onMouseLeave={tiltLeave}>
                   <span className="date">{n.d}</span>
                   <b>{n[lang][0]}</b>
                   <p>{n[lang][1]}</p>
