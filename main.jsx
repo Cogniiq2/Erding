@@ -6,7 +6,11 @@ import "./styles/tokens.css";
 import "./styles/themes.css";
 import "./styles/global.css";
 
-const Landing = lazy(() => import("./App.jsx"));
+const landingModules = import.meta.glob("./App.jsx");
+const Landing = lazy(() => {
+  const loadLanding = landingModules["./App.jsx"];
+  return loadLanding ? loadLanding() : Promise.resolve({ default: LandingFallback });
+});
 const DepartmentIndex = lazy(() => import("./pages/DepartmentIndex.jsx"));
 const DepartmentRoute = lazy(() => import("./pages/DepartmentRoute.jsx"));
 const ZentrenIndex = lazy(() => import("./pages/ZentrenIndex.jsx"));
@@ -28,6 +32,24 @@ function PorcelainFallback() {
     <div className="porcelain-fallback" role="status" aria-live="polite" aria-label="Seite wird geladen">
       <span className="fallback-dot" />
     </div>
+  );
+}
+
+function LandingFallback() {
+  return (
+    <main className="missing-landing">
+      <div className="wrap">
+        <span className="mono">Klinikum Landkreis Erding</span>
+        <h1>Konzeptseite bereit.</h1>
+        <p>
+          Die geschützte Landing-Datei wurde in dieser Laufzeit nicht gefunden. Die innere Website ist
+          weiterhin vollständig erreichbar.
+        </p>
+        <a className="btn btn-primary" href="/behandlungsangebot">
+          Behandlungsangebot öffnen
+        </a>
+      </div>
+    </main>
   );
 }
 
