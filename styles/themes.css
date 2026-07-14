@@ -1,0 +1,72 @@
+html[data-theme="standard"] {
+  --ink: #07181d;
+  --deep: #0a2a31;
+  --klinik: #0e6e77;
+  --teal: #17919b;
+  --glow: #5fd4cf;
+  --porcelain: #f7f6f2;
+  --paper: #ffffff;
+  --line: rgba(14, 110, 119, 0.14);
+  --gold: #c9964b;
+  --red: #c24334;
+  --muted: #5e7379;
+  --focus: #5fd4cf;
+}
+
+html[data-theme="farbsehen"] {
+  --ink: #06141c;
+  --deep: #0b2435;
+  --klinik: #2e6fb7;
+  --teal: #4d8fd0;
+  --glow: #88bff0;
+  --porcelain: #f8f7f2;
+  --paper: #ffffff;
+  --line: rgba(46, 111, 183, 0.2);
+  --gold: #d98e32;
+  --red: #c0392b;
+  --muted: #536674;
+  --focus: #2e6fb7;
+}
+
+html[data-theme="kontrast"] {
+  --ink: #000000;
+  --deep: #000000;
+  --klinik: #003f8f;
+  --teal: #003f8f;
+  --glow: #003f8f;
+  --porcelain: #ffffff;
+  --paper: #ffffff;
+  --line: #000000;
+  --gold: #7a4a00;
+  --red: #9f1a12;
+  --muted: #1f1f1f;
+  --focus: #000000;
+  --shadow: none;
+}
+
+html[data-theme="kontrast"] .site-shell a {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+html[data-theme="kontrast"] .site-shell :is(.card, .rail, .schedule-board, .team-card, .contact-card, .external-card, .news-card, .event-card, .finder-panel, .site-panel) {
+  border-width: 2px;
+}
+
+html[data-theme="kontrast"] .site-shell :focus-visible {
+  outline-width: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+html[data-motion="reduced"],
+html[data-motion="reduced"] * {
+  scroll-behavior: auto !important;
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
