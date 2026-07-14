@@ -28,27 +28,6 @@ textarea {
   background: var(--porcelain);
 }
 
-.missing-landing {
-  min-height: 100svh;
-  display: grid;
-  align-items: center;
-  background: radial-gradient(44rem 28rem at 82% 16%, rgba(95, 212, 207, 0.18), transparent 65%), var(--ink);
-  color: var(--paper);
-}
-
-.missing-landing h1 {
-  max-width: 11ch;
-  margin: 0.5rem 0 1rem;
-  font-family: "Bricolage Grotesque", Georgia, serif;
-  font-size: clamp(2.6rem, 8vw, 5.8rem);
-  line-height: 0.98;
-}
-
-.missing-landing p {
-  max-width: 36rem;
-  color: rgba(255, 255, 255, 0.74);
-}
-
 .fallback-dot {
   width: 0.72rem;
   height: 0.72rem;
