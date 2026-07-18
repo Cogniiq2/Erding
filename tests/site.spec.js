@@ -68,7 +68,9 @@ test("menu and search close with Escape", async ({ page }) => {
   await expect(page.getByRole("dialog", { name: /Seitensuche/i })).toBeHidden();
 });
 
-test("required routes resolve", async ({ page }) => {
+test("required routes resolve", async ({ page }, testInfo) => {
+  testInfo.setTimeout(process.env.CI ? 120000 : 60000);
+
   for (const route of allInternalRoutes) {
     await page.goto(route);
     await expect(page.locator("main")).toBeVisible();

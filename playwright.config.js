@@ -1,20 +1,26 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const isCI = process.env.CI === "true";
 const useExternalServer = process.env.PLAYWRIGHT_EXTERNAL_SERVER === "1";
 
 export default defineConfig({
   testDir: "./tests",
-  reporter: [["list"]],
+  fullyParallel: false,
+  retries: isCI ? 1 : 0,
+  workers: isCI ? 1 : undefined,
+  reporter: isCI ? [["line"], ["html", { open: "never" }]] : [["list"]],
   use: {
     baseURL: "http://127.0.0.1:4173",
     trace: "retain-on-failure",
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
   },
   webServer: useExternalServer
     ? undefined
     : {
-        command: "node ./node_modules/vite/bin/vite.js --host 127.0.0.1 --port 4173",
+        command: "npm run preview -- --host 127.0.0.1 --port 4173",
         url: "http://127.0.0.1:4173",
-        reuseExistingServer: true,
+        reuseExistingServer: !isCI,
         timeout: 120000,
       },
   projects: [

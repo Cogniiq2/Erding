@@ -4,6 +4,8 @@ const port = 4173;
 const baseURL = `http://127.0.0.1:${port}`;
 const viteBin = "./node_modules/vite/bin/vite.js";
 const playwrightCli = "./node_modules/playwright/cli.js";
+const isCI = process.env.CI === "true";
+const usePlaywrightWebServer = isCI && process.platform !== "win32";
 
 function spawnNode(args, options = {}) {
   return spawn(process.execPath, args, {
@@ -38,20 +40,26 @@ function stop(child) {
   if (!child.killed) child.kill();
 }
 
-const server = spawnNode([viteBin, "--host", "127.0.0.1", "--port", String(port)], {
-  stdio: "ignore",
-});
+let server;
 
 let exitCode;
 
 try {
-  await waitForServer();
-  const testRun = spawnNode([playwrightCli, "test", ...process.argv.slice(2)], {
-    env: { ...process.env, PLAYWRIGHT_EXTERNAL_SERVER: "1" },
-  });
-  exitCode = await waitForExit(testRun);
+  if (usePlaywrightWebServer) {
+    const testRun = spawnNode([playwrightCli, "test", ...process.argv.slice(2)]);
+    exitCode = await waitForExit(testRun);
+  } else {
+    server = spawnNode([viteBin, "preview", "--host", "127.0.0.1", "--port", String(port)], {
+      stdio: "ignore",
+    });
+    await waitForServer();
+    const testRun = spawnNode([playwrightCli, "test", ...process.argv.slice(2)], {
+      env: { ...process.env, PLAYWRIGHT_EXTERNAL_SERVER: "1" },
+    });
+    exitCode = await waitForExit(testRun);
+  }
 } finally {
-  stop(server);
+  if (server) stop(server);
 }
 
 process.exit(exitCode ?? 1);
