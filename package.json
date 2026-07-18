@@ -1,22 +1,23 @@
 {
-  "name": "cloudflare-react-website",
-  "version": "1.0.0",
+  "name": "klinikum-erding-production-base",
   "private": true,
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 127.0.0.1",
     "build": "vite build",
-    "preview": "vite preview",
+    "preview": "vite preview --host 127.0.0.1",
     "deploy": "wrangler deploy"
   },
   "dependencies": {
-    "react": "latest",
-    "react-dom": "latest",
-    "three": "latest"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "three": "^0.171.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "latest",
-    "vite": "latest",
+    "@vitejs/plugin-react": "^6.0.3",
+    "vite": "^8.1.4",
     "wrangler": "^4.111.0"
   }
 }
