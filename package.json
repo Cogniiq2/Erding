@@ -1,22 +1,36 @@
 {
-  "name": "cloudflare-react-website",
-  "version": "1.0.0",
+  "name": "klinikum-erding-production-base",
   "private": true,
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 127.0.0.1",
+    "prebuild": "npm run validate:content",
     "build": "vite build",
-    "preview": "vite preview",
-    "deploy": "wrangler deploy"
+    "preview": "vite preview --host 127.0.0.1",
+    "deploy": "wrangler deploy",
+    "lint": "eslint .",
+    "validate:content": "node scripts/validate-content.mjs",
+    "test:routes": "node scripts/route-smoke.mjs",
+    "test:links": "node scripts/internal-links.mjs",
+    "test:browser": "node scripts/run-browser-tests.mjs",
+    "test": "npm run test:routes && npm run test:links && npm run test:browser",
+    "screenshots": "node scripts/capture-screenshots.mjs"
   },
   "dependencies": {
-    "react": "latest",
-    "react-dom": "latest",
-    "three": "latest"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "three": "^0.171.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "latest",
-    "vite": "latest",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.61.1",
+    "@vitejs/plugin-react": "^6.0.3",
+    "eslint": "^10.7.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.7.0",
+    "vite": "^8.1.4",
     "wrangler": "^4.111.0"
   }
 }
