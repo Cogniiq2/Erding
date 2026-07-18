@@ -80,4 +80,4 @@ Implemented as new files under `src/`, plus a small `App.jsx` wrapper.
 - Keyboard pass: skip link, header nav, menu open/close, route links.
 - Reduced-motion pass: helix remains static and CSS animations stop.
 - Metadata pass: title/description change per route.
-- Fact pass: no unsourced hard facts without source IDs or `CONTENT-NEEDED`.
+- Fact pass: no unsourced hard facts without source IDs or source-review flags.

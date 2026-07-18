@@ -9,34 +9,34 @@ Scope: Routed production architecture, complete first-pass user-facing hospital 
 - Active branch confirmed as `codex/production-architecture`.
 - `origin/main` remains the landing-only version and was not checked out, merged into, or overwritten.
 - Previous foundation contained a routed app shell, shared layout, content model, docs, and a simplified `SignatureHelix`.
-- Initial browser inspection found homepage regression: the signature experience had been reduced to a simpler helix-to-ECG canvas, mobile readability was weak, and visible `CONTENT-NEEDED` labels appeared in the UI.
+- Initial browser inspection found homepage regression: the signature experience had been reduced to a simpler helix-to-ECG canvas, mobile readability was weak, and maintenance labels appeared in the UI.
 
 ## Route Inventory
 
-| Route | Completion | Content Status | Source Status | Remaining Client Input |
+| Route | Completion | Content Status | Source Status | Follow-up |
 | --- | --- | --- | --- | --- |
-| `/` | Implemented | Mixed verified and confirmation-needed content | Official sources + brief | Official innovation/news imagery and future-topic confirmations |
-| `/aktuelles` | Implemented | Needs client confirmation | Source-governed newsroom structure | Current dated news, image rights, approvals |
-| `/veranstaltungen` | Implemented | Needs client confirmation | Source-governed event structure | Current dates, locations, registration details |
-| `/patienten-besucher` | Implemented | Needs client confirmation | Official visiting + service architecture | Full patient-service text and contact ownership |
+| `/` | Implemented | Verified institutional, emergency and current-news anchors | Official sources + brief | Official photography and final service ownership |
+| `/aktuelles` | Implemented | Official 2026 news integrated | Official news list and detail pages | Refresh before launch; image rights |
+| `/veranstaltungen` | Implemented | Future official events integrated | Official event listings | Refresh before launch; registration details |
+| `/patienten-besucher` | Implemented | Official visiting and portal anchors | Official visiting + patient services | Full service text and contact ownership |
 | `/notfall` | Implemented | Needs clinical confirmation | Emergency wording intentionally conservative | Notaufnahme process/contact wording approval |
 | `/medizin-zentren` | Implemented | Verified directory, detail text pending | Official medical directory and centers | Department-specific service/team/download detail |
-| `/pflege` | Implemented | Needs client confirmation | Official OP-care source + content architecture | Nursing directorate/team details |
-| `/karriere-bildung` | Implemented | Needs client confirmation | Official profile + career portal link | Benefits, contacts, education confirmations |
-| `/klinikum` | Implemented | Verified profile + institutional topics pending | Official about/imprint | Leadership/personnel confirmation |
+| `/pflege` | Implemented | Official care profile anchor | Official care source + content architecture | Nursing directorate/team details |
+| `/karriere-bildung` | Implemented | Official employer and career entry anchors | Official profile + career portal link | Benefits, contacts, education confirmations |
+| `/klinikum` | Implemented | Verified profile and institutional anchors | Official about/imprint | Leadership/personnel refresh before launch |
 | `/standorte` | Implemented | Verified address basis | Official contact source | Final maps, parking and photography |
 | `/standorte/erding` | Implemented | Verified | Official contact source | Final wayfinding assets |
-| `/standorte/dorfen` | Implemented | Needs client confirmation | Official contact/about source | Dorfen access details and photography |
+| `/standorte/dorfen` | Implemented | Official location anchor | Official contact/about source | Dorfen access details and photography |
 | `/kontakt-anfahrt` | Implemented | Verified basis | Official contact source | Final map/embed decision |
-| `/digitalisierung` | Implemented | Needs client confirmation | Brief + governance model | Portal, Dexter and backend integrations |
+| `/digitalisierung` | Implemented | Official portal and Dexter news anchors | Official news + operating model | Portal destination, support and integration details |
 | `/qualitaet` | Implemented | Mixed | Official center list | Quality reports, certificate PDFs |
 | `/zertifizierungen` | Implemented | Verified center list, certificates pending | Official centers source | Certificate files, dates, wording |
-| `/krankenhausleitung` | Implemented | Needs client confirmation | Imprint as basis | Current people, roles and contacts |
-| `/leitbild` | Implemented | Needs client confirmation | Official profile + brief | Final Leitbild wording |
-| `/geschichte` | Implemented | Needs client confirmation | Official profile + brief | Historical timeline details |
+| `/krankenhausleitung` | Implemented | Official leadership anchors | Official leadership + imprint | Current people, roles and contacts |
+| `/leitbild` | Implemented | Official mission anchor | Official profile + mission source | Final Leitbild wording |
+| `/geschichte` | Implemented | Official history anchor | Official profile + history source | Historical timeline details |
 | `/impressum` | Implemented | Verified | Official imprint | Legal owner review before launch |
-| `/datenschutz` | Implemented | Needs legal confirmation | Imprint only | Final legal privacy text |
-| `/barrierefreiheit` | Implemented | Needs audit confirmation | Brief | Final accessibility statement and feedback route |
+| `/datenschutz` | Implemented | Site-build privacy inventory | Official privacy + imprint | Legal review before launch |
+| `/barrierefreiheit` | Implemented | Implementation-based statement | Site accessibility behavior | Formal audit before compliance claim |
 
 ## Route QA
 
@@ -46,7 +46,7 @@ Scope: Routed production architecture, complete first-pass user-facing hospital 
   - `/medizin-zentren/fachabteilungen/gynaekologie-geburtshilfe`
   - `/medizin-zentren/zentren/brustzentrum`
   - `/nicht-vorhanden`
-- Result: no broken required routes, no visible `CONTENT-NEEDED`, no mojibake, no fresh console warnings/errors.
+- Result: no broken required routes, no visible maintenance/source placeholders, no mojibake, no fresh console warnings/errors.
 - Internal link check collected and opened 79 unique internal paths; result: no broken internal links.
 - Legacy `/im-notfall` routes redirect to `/notfall`.
 
@@ -81,8 +81,30 @@ Screenshots saved:
 - `docs/screenshots/home-helix-1440.png`
 - `docs/screenshots/home-ecg-1440.png`
 - `docs/screenshots/home-cell-core-1440.png`
+- `docs/screenshots/home-top-1440.png`
+- `docs/screenshots/home-full-1440.png`
+- `docs/screenshots/home-signature-helix-1440.png`
+- `docs/screenshots/home-signature-ecg-1440.png`
+- `docs/screenshots/home-signature-cell-1440.png`
+- `docs/screenshots/home-signature-core-1440.png`
+- `docs/screenshots/menu-desktop-1440.png`
+- `docs/screenshots/menu-mobile-390.png`
+- `docs/screenshots/treatment-finder-desktop.png`
+- `docs/screenshots/treatment-finder-mobile.png`
+- `docs/screenshots/aktuelles-1440.png`
 - `docs/screenshots/medizin-390.png`
+- `docs/screenshots/medizin-index-1440.png`
 - `docs/screenshots/notfall-1440.png`
+- `docs/screenshots/department-detail-gyn-1440.png`
+- `docs/screenshots/patienten-1440.png`
+- `docs/screenshots/karriere-1440.png`
+- `docs/screenshots/standort-erding-1440.png`
+- `docs/screenshots/legal-impressum-1440.png`
+- `docs/screenshots/legal-datenschutz-1440.png`
+- `docs/screenshots/legal-barrierefreiheit-1440.png`
+- `docs/screenshots/404-1440.png`
+
+PNG signatures were verified locally as `89 50 4E 47`.
 
 ## Original Homepage Comparison
 
@@ -102,25 +124,25 @@ Fixes made after screenshot QA:
 - ECG recentering improved after helix traversal.
 - Story copy transition shortened and inactive acts hidden to prevent text overlap.
 
-## Remaining `CONTENT-NEEDED`
+## Remaining Follow-up Inputs
 
-Remaining markers are data-layer only and did not appear visibly during browser QA:
+Remaining inputs are tracked in the data layer and do not appear visibly during browser QA:
 
 - Dorfen photography, wayfinding and access details.
 - Department detail content: service spectrum, team, downloads, clinic-specific FAQ and hours.
 - Notaufnahme detailed contacts and process wording.
-- Robotik/Dexter and planned Kinderklinik: current official source and publication approval.
+- Robotik/Dexter and planned Kinderklinik: official facts are integrated; refresh dates before launch.
 - Personnel names and current Sprechstunden before launch.
 - Zentrumsleitung, certificates, documents and certificate dates.
 - Patient portal destination, authentication, support and privacy details.
-- Current news and events with dates, media rights and approvals.
-- Final Datenschutz text.
-- Final Barrierefreiheit declaration, audit status and feedback route.
+- Official news and events: refresh close to launch; add media rights where images are used.
+- Final Datenschutz legal review.
+- Final Barrierefreiheit audit status and feedback route.
 
 ## Unverified Or Time-Sensitive Facts
 
-- Personnel and leadership are treated as `needs-client-confirmation`.
-- Dexter/robotic surgery and planned Kinderklinik remain prepared as innovation/news topics, not final hard claims.
+- Personnel and leadership are treated as refresh-before-launch facts.
+- Dexter/robotic surgery and planned Kinderklinik claims are backed by official 2026 news sources; future dates should still be refreshed before launch.
 - Specific vacancies are not rendered; job entry links to the external career portal.
 - No fake review ratings, birth numbers, certifications, vacancies, or personnel claims were added.
 
@@ -157,9 +179,12 @@ The repo did not contain authorized photography. Required final assets are docum
 
 ```powershell
 npm.cmd install
-npm.cmd run dev -- --port 5173
+npm.cmd run validate:content
+npm.cmd run lint
 npm.cmd run build
-npm.cmd audit
+npm.cmd test
+npm.cmd run screenshots
+npm.cmd run dev -- --port 5173
 ```
 
 Then open:

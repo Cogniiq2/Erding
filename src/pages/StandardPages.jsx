@@ -11,7 +11,6 @@ import {
   imageSlots,
   legalPages,
   locations,
-  medicalUnits,
   news,
   nursingTopics,
   patientServices,
@@ -20,18 +19,12 @@ import {
 } from "../content/siteContent.js";
 import { JsonLd, usePageMeta } from "../lib/meta.js";
 
-function statusText(status) {
-  if (status === "verified") return "offiziell geprüft";
-  if (status === "needs-client-confirmation") return "redaktionell vorzubereiten";
-  return "in Abstimmung";
-}
-
 export function NewsPage() {
   usePageMeta({ title: "Aktuelles", description: "Aktuelles, Meldungen und medizinische Entwicklungen des Klinikums Landkreis Erding.", path: "/aktuelles" });
   return (
     <>
-      <PageHero eyebrow="Aktuelles" title="Ein Newsroom mit sauberem Prüfstand." intro="Aktuelle Meldungen werden sichtbar, wenn Datum, Quelle, Bildrecht und Freigabe zusammenpassen." breadcrumbs={[{ label: "Aktuelles" }]} />
-      <Section eyebrow="Redaktion" title="Was hier veröffentlicht wird">
+      <PageHero eyebrow="Aktuelles" title="Offizielle Meldungen aus dem Klinikum." intro="Nachrichten, medizinische Entwicklungen und Hinweise aus den offiziellen Veröffentlichungen des Klinikums." breadcrumbs={[{ label: "Aktuelles" }]} />
+      <Section eyebrow="Nachrichten" title="Aktuelle Meldungen">
         <div className="news-stream">
           {news.map((item) => (
             <article key={item.slug}>
@@ -47,9 +40,9 @@ export function NewsPage() {
       </Section>
       <Section eyebrow="Themen" title="Aktuelle medizinische Entwicklung ohne Spekulation">
         <div className="innovation-row">
-          <RailCard eyebrow="Medizin" title="Abteilungsnachrichten" text="Meldungen aus Fachabteilungen werden fachlich freigegeben und mit passenden Ansprechpartnern verknüpft." to="/medizin-zentren" />
-          <RailCard eyebrow="Innovation" title="Robotik und Digitalisierung" text="Innovationsmeldungen wie Robotik werden erst nach aktueller offizieller Quelle ausgespielt." to="/digitalisierung" />
-          <RailCard eyebrow="Familie" title="Geburt und Kinderklinik" text="Zukunftsthemen werden als Nachrichten geführt, sobald offizielle Termin- und Planungsquellen vorliegen." to="/veranstaltungen" />
+          <RailCard eyebrow="Medizin" title={news[1].title} text={news[1].teaser} to="/digitalisierung" />
+          <RailCard eyebrow="Digital" title={news[3].title} text={news[3].teaser} to="/patienten-besucher/patientenportal-digitale-services" />
+          <RailCard eyebrow="Familie" title={news[0].title} text={news[0].teaser} to="/veranstaltungen" />
         </div>
       </Section>
     </>
@@ -60,7 +53,7 @@ export function EventsPage() {
   usePageMeta({ title: "Veranstaltungen", description: "Kurse, Infoabende und Veranstaltungen des Klinikums Landkreis Erding.", path: "/veranstaltungen" });
   return (
     <>
-      <PageHero eyebrow="Veranstaltungen" title="Termine, die Menschen vorbereiten." intro="Der Kalender ist für Kurse, Infoabende, Karriereformate und medizinische Veranstaltungen strukturiert." breadcrumbs={[{ label: "Veranstaltungen" }]} />
+      <PageHero eyebrow="Veranstaltungen" title="Termine, die Orientierung geben." intro="Kurse, Infoabende, Karriereformate und medizinische Veranstaltungen aus dem offiziellen Kalender." breadcrumbs={[{ label: "Veranstaltungen" }]} />
       <Section eyebrow="Kalender" title="Veranstaltungsformate">
         <div className="event-board">
           {events.map((item) => (
@@ -74,8 +67,8 @@ export function EventsPage() {
       </Section>
       <Section eyebrow="Geburt & Familie" title="Kurse und Infoabende als eigener Zugang">
         <EditorialSplit
-          title="Prospektive Eltern brauchen medizinische Klarheit und ruhige Vorbereitung."
-          text="Geburtsplanung, Informationsabende, Kurse und Babysprechstunde werden im Veranstaltungssystem auffindbar gemacht."
+          title="Werdende Eltern brauchen medizinische Klarheit und ruhige Wege."
+          text="Geburtsplanung, Informationsabende, Kurse und Babysprechstunde sind im Familienbereich schnell erreichbar."
           aside={<Checklist items={["Termin und Ort", "Anmeldung", "Barriereinformation", "Kontakt bei Rückfragen"]} />}
         />
       </Section>
@@ -90,7 +83,7 @@ export function PatientsPage() {
       <PageHero eyebrow="Patienten & Besucher" title="Praktische Antworten zuerst." intro="Der Bereich beantwortet: Wo muss ich hin, was brauche ich, wer hilft, und was gilt für Erding oder Dorfen?" breadcrumbs={[{ label: "Patienten & Besucher" }]} />
       <Section eyebrow="Schnell klären" title="Vier häufige Situationen">
         <div className="question-grid">
-          <Callout title="Ich komme zur Aufnahme" text="Unterlagen vorbereiten, Standort prüfen und vor Ort dem ausgeschilderten Weg folgen." />
+          <Callout title="Ich komme zur Aufnahme" text="Unterlagen bereitlegen, Standort prüfen und vor Ort dem ausgeschilderten Weg folgen." />
           <Callout title="Ich besuche jemanden" text="Besuchszeiten und Hygieneregeln gelten standortübergreifend." />
           <Callout title="Ich werde entlassen" text="Anschlussversorgung und Unterlagen frühzeitig ansprechen." />
           <Callout title="Ich suche digitale Services" text="Das Patientenportal wird als eigener digitaler Einstieg geführt." />
@@ -109,15 +102,19 @@ export function PatientsPage() {
 export function PatientServicePage() {
   const { slug } = useParams();
   const service = bySlug(patientServices, slug);
+  usePageMeta({
+    title: service?.title || "Patienten & Besucher",
+    description: service?.teaser || "Patientenservices am Klinikum Landkreis Erding.",
+    path: service ? `/patienten-besucher/${service.slug}` : "/patienten-besucher",
+  });
   if (!service) return <Navigate to="/patienten-besucher" replace />;
-  usePageMeta({ title: service.title, description: service.teaser, path: `/patienten-besucher/${service.slug}` });
   return (
     <>
       <PageHero eyebrow="Patientenservice" title={service.title} intro={service.teaser} breadcrumbs={[{ label: "Patienten & Besucher", to: "/patienten-besucher" }, { label: service.title }]} />
       <Section eyebrow="Ablauf" title="Schritt für Schritt">
         <Timeline items={service.pathway} />
       </Section>
-      <Section eyebrow="Vorbereitung" title="Was hilft">
+      <Section eyebrow="Unterlagen" title="Was hilft">
         <Checklist items={service.checklist} />
       </Section>
       <Section eyebrow="Kontakt" title="Wenn etwas unklar bleibt">
@@ -136,7 +133,9 @@ export function EmergencyPage() {
       <PageHero eyebrow="Notfall" title="Ruhig handeln. Richtig ankommen." intro="Lebensbedrohliche Notfälle laufen immer über 112. Der Klinikbereich erklärt die Notaufnahme als Serviceweg, nicht als Diagnoseangebot." tone="emergency" breadcrumbs={[{ label: "Notfall" }]} />
       <Section className="emergency-strip" eyebrow="Sofort" title="Die drei Wege unterscheiden">
         <div className="emergency-grid">
-          <Callout tone="emergency" title="Lebensgefahr" text="Sofort 112 wählen. Nicht über Website, E-Mail oder Formular versuchen." />
+          <Callout tone="emergency" title="Lebensgefahr" text="Sofort 112 wählen. Nicht per E-Mail oder Formular versuchen.">
+            <a className="button primary" href={site.emergencyHref}>112 anrufen</a>
+          </Callout>
           <Callout title="Akute schwere Beschwerden" text="Informationen zur Notaufnahme, Ankunft und Ersteinschätzung lesen." />
           <Callout title="Nicht dringende Anliegen" text={`Zentrale ${site.phone} kontaktieren oder passende Fachabteilung suchen.`} />
         </div>
@@ -154,15 +153,19 @@ export function EmergencyPage() {
 export function EmergencyTopicPage() {
   const { slug } = useParams();
   const topic = bySlug(emergencyTopics, slug);
+  usePageMeta({
+    title: topic?.title || "Notfall",
+    description: topic?.teaser || "Notfallorientierung am Klinikum Landkreis Erding.",
+    path: topic ? `/notfall/${topic.slug}` : "/notfall",
+  });
   if (!topic) return <Navigate to="/notfall" replace />;
-  usePageMeta({ title: topic.title, description: topic.teaser, path: `/notfall/${topic.slug}` });
   return (
     <>
       <PageHero eyebrow="Notfall" title={topic.title} intro={topic.teaser} tone="emergency" breadcrumbs={[{ label: "Notfall", to: "/notfall" }, { label: topic.title }]} />
       <Section eyebrow="Ablauf" title="Was passiert">
         <Timeline items={topic.steps} />
       </Section>
-      <Section eyebrow="Medizinische Verantwortung" title="Keine Diagnose auf der Website">
+      <Section eyebrow="Medizinische Verantwortung" title="Keine Diagnose im Online-Angebot">
         <Callout tone="emergency" title="Bei Lebensgefahr 112" text="Diese Seite gibt Orientierung zum Weg in die Versorgung. Persönliche medizinische Fragen gehören in ärztliche Hände." />
       </Section>
     </>
@@ -182,7 +185,7 @@ export function NursingPage() {
         </div>
       </Section>
       <Section className="ink-band" eyebrow="Ausbildung" title="Pflege entwickelt Nachwuchs und Qualität">
-        <EditorialSplit title="Praxisanleitung, Fortbildung und Karrierewege gehören sichtbar zusammen." text="Pflegecontent wird mit Karriere und Bildung verknüpft, damit Bewerbende die fachliche Entwicklung nachvollziehen können." aside={<Link className="button" to="/karriere-bildung">Karriere & Bildung</Link>} />
+        <EditorialSplit title="Praxisanleitung, Fortbildung und Karrierewege gehören sichtbar zusammen." text="Pflegeinformationen werden mit Karriere und Bildung verknüpft, damit Bewerbende die fachliche Entwicklung nachvollziehen können." aside={<Link className="button" to="/karriere-bildung">Karriere & Bildung</Link>} />
       </Section>
     </>
   );
@@ -191,12 +194,16 @@ export function NursingPage() {
 export function NursingTopicPage() {
   const { slug } = useParams();
   const topic = bySlug(nursingTopics, slug);
+  usePageMeta({
+    title: topic?.title || "Pflege",
+    description: topic?.teaser || "Pflege am Klinikum Landkreis Erding.",
+    path: topic ? `/pflege/${topic.slug}` : "/pflege",
+  });
   if (!topic) return <Navigate to="/pflege" replace />;
-  usePageMeta({ title: topic.title, description: topic.teaser, path: `/pflege/${topic.slug}` });
   return (
     <>
       <PageHero eyebrow="Pflege" title={topic.title} intro={topic.teaser} breadcrumbs={[{ label: "Pflege", to: "/pflege" }, { label: topic.title }]} />
-      <Section eyebrow="Pflegeprofil" title="Inhaltliche Struktur">
+      <Section eyebrow="Pflegeprofil" title="Pflegealltag und Entwicklung">
         <div className="content-grid">
           <Callout title="Aufgaben" text="Rollen, Patientensituationen und Schnittstellen werden verständlich abgebildet." />
           <Callout title="Entwicklung" text="Ausbildung, Praxisanleitung und Weiterbildung werden je Bereich verknüpft." />
@@ -227,7 +234,7 @@ export function CareerPage() {
         </div>
       </Section>
       <Section eyebrow="Region" title="Arbeiten im Landkreis Erding">
-        <EditorialSplit title="Regionaler Arbeitgeber mit klinischer Vielfalt." text="Karrierekommunikation verbindet medizinische Verantwortung, Ausbildung, Alltag im Team und Lebensqualität in der Region." aside={<Checklist items={["Keine erfundenen Vakanzen", "Externer Joblink", "Kontakt und Bewerbung nach Freigabe"]} />} />
+        <EditorialSplit title="Regionaler Arbeitgeber mit klinischer Vielfalt." text="Karrierekommunikation verbindet medizinische Verantwortung, Ausbildung, Alltag im Team und Lebensqualität in der Region." aside={<Checklist items={["Offizielles Karriereportal", "Externer Joblink", "Kontakt und Bewerbung über die genannten Wege"]} />} />
       </Section>
     </>
   );
@@ -236,15 +243,19 @@ export function CareerPage() {
 export function CareerTopicPage() {
   const { slug } = useParams();
   const topic = bySlug(careerTopics, slug);
+  usePageMeta({
+    title: topic?.title || "Karriere & Bildung",
+    description: topic?.teaser || "Karriere und Bildung am Klinikum Landkreis Erding.",
+    path: topic ? `/karriere-bildung/${topic.slug}` : "/karriere-bildung",
+  });
   if (!topic) return <Navigate to="/karriere-bildung" replace />;
-  usePageMeta({ title: topic.title, description: topic.teaser, path: `/karriere-bildung/${topic.slug}` });
   return (
     <>
       <PageHero eyebrow="Karriere & Bildung" title={topic.title} intro={topic.teaser} tone="gold" breadcrumbs={[{ label: "Karriere & Bildung", to: "/karriere-bildung" }, { label: topic.title }]} />
       <Section eyebrow="Orientierung" title="Was Bewerbende hier erwarten">
         <Checklist items={["Aufgaben und Einsatzbereiche", "Voraussetzungen", "Bewerbungsweg", "Kontakt und nächste Schritte"]} />
       </Section>
-      <Section eyebrow="Aktuelle Stellen" title="Keine erfundenen Vakanzen">
+      <Section eyebrow="Aktuelle Stellen" title="Offizielles Karriereportal">
         <Callout title="Offizielles Karriereportal" text="Konkrete Stellenangebote werden aus dem offiziellen Karriereportal geöffnet.">
           <a className="button" href="https://karriere.klinikum-erding.de/" target="_blank" rel="noreferrer">Jobs öffnen</a>
         </Callout>
@@ -264,7 +275,7 @@ export function KlinikumPage() {
       </Section>
       <Section eyebrow="Institution" title="Auftrag, Qualität und Entwicklung">
         <div className="pathway-grid">
-          {aboutTopics.map((topic) => <RailCard key={topic.slug} eyebrow={statusText(topic.contentStatus)} title={topic.title} text={topic.teaser} to={`/${topic.slug}`} />)}
+          {aboutTopics.map((topic) => <RailCard key={topic.slug} eyebrow={topic.category} title={topic.title} text={topic.teaser} to={`/${topic.slug}`} />)}
         </div>
       </Section>
     </>
@@ -296,8 +307,12 @@ export function LocationsPage() {
 export function LocationPage() {
   const { slug } = useParams();
   const location = bySlug(locations, slug);
+  usePageMeta({
+    title: location?.title || "Standorte",
+    description: location?.description || "Standorte des Klinikums Landkreis Erding.",
+    path: location ? `/standorte/${location.slug}` : "/standorte",
+  });
   if (!location) return <Navigate to="/standorte" replace />;
-  usePageMeta({ title: location.title, description: location.description, path: `/standorte/${location.slug}` });
   return (
     <>
       <PageHero eyebrow={location.eyebrow} title={location.title} intro={location.description} breadcrumbs={[{ label: "Standorte", to: "/standorte" }, { label: location.title }]} />
@@ -348,12 +363,12 @@ export function DigitalPage() {
     <>
       <PageHero eyebrow="Digitalisierung" title="Digital, wenn es wirklich hilft." intro="Digitale Services werden als sichere Wege konzipiert, nicht als dekorative Technikversprechen." breadcrumbs={[{ label: "Digitalisierung" }]} />
       <Section eyebrow="Prinzipien" title="Keine stillen Sackgassen">
-        <EditorialSplit title="Ein digitaler Service braucht Prozess, Datenschutz und Support." text="Die Seite trennt produktive Kontaktwege von künftigen Funktionen. Medizinische Notfälle werden nicht digital kanalisiert." aside={<Checklist items={["Patientenportal als eigener Einstieg", "Datenschutzfreigabe vor Aktivierung", "Telefonische Alternativen sichtbar", "Keine Diagnosefunktion"]} />} />
+        <EditorialSplit title="Ein digitaler Service braucht Prozess, Datenschutz und Support." text="Die Seite trennt digitale Services, Telefonwege und Notfallkommunikation klar voneinander. Medizinische Notfälle werden nicht digital kanalisiert." aside={<Checklist items={["Patientenportal als eigener Einstieg", "Schulter-Sprechstunde digital erreichbar", "Telefonische Alternativen sichtbar", "Keine Diagnosefunktion"]} />} />
       </Section>
       <Section eyebrow="Innovation" title="Robotik, Infrastruktur und Portalentwicklung">
         <div className="innovation-row">
-          <Callout title="Robotik" text="Thema für freigegebene medizinische Innovationsmeldungen." />
-          <Callout title="Patientenportal" text="Portal, Authentifizierung und Support werden erst mit finalem Zielsystem aktiviert." />
+          <Callout title="Robotik" text={news[1].teaser} />
+          <Callout title="Patientenportal" text={news[3].teaser} />
           <Callout title="Medizinische Motion" text="Scan, Puls und Partikelfluss dienen Orientierung und Bedeutung, nicht Dekoration." />
         </div>
       </Section>
@@ -365,11 +380,11 @@ export function QualityPage() {
   usePageMeta({ title: "Qualität", description: "Qualitätsmanagement, Zentren, Berichte und Vertrauen am Klinikum Landkreis Erding.", path: "/qualitaet" });
   return (
     <>
-      <PageHero eyebrow="Qualität" title="Qualität braucht Nachweise und Ansprechpartner." intro="Der Qualitätsbereich bündelt Zentren, Berichte, Patientenfürsprache und Governance." breadcrumbs={[{ label: "Qualität" }]} />
-      <Section eyebrow="Nachweise" title="Strukturierte Vertrauenssignale">
+      <PageHero eyebrow="Qualität" title="Qualität braucht Nachweise und Ansprechpartner." intro="Der Qualitätsbereich bündelt Zentren, Berichte, Zertifizierungen und Patientenfürsprache." breadcrumbs={[{ label: "Qualität" }]} />
+      <Section eyebrow="Nachweise" title="Vertrauenssignale">
         <div className="quality-band">
           <RailCard title="Zertifizierungen" text="Zentrums- und Zertifikatsinformationen werden als eigene Seite gepflegt." to="/zertifizierungen" />
-          <RailCard title="Qualitätsberichte" text="Berichte und Dokumente brauchen final freigegebene Dateien." to="/patienten-besucher/downloads-dokumente" />
+          <RailCard title="Qualitätsberichte" text="Aktuelle Qualitätsberichte sind über den Dokumentenbereich erreichbar." to="/patienten-besucher/downloads-dokumente" />
           <RailCard title="Patientenfürsprache" text="Feedbackwege werden im Patientenbereich nachvollziehbar verlinkt." to="/patienten-besucher/feedback-patientenfuersprache" />
         </div>
       </Section>
@@ -381,7 +396,7 @@ export function CertificatesPage() {
   usePageMeta({ title: "Zertifizierungen", description: "Zertifizierte Zentren und Spezialbereiche des Klinikums Landkreis Erding.", path: "/zertifizierungen" });
   return (
     <>
-      <PageHero eyebrow="Zertifizierungen" title="Zentren und Nachweise ohne Übertreibung." intro="Offiziell gelistete Zentren sind sichtbar. Konkrete Zertifikate, Laufzeiten und PDFs müssen final bestätigt werden." breadcrumbs={[{ label: "Zertifizierungen" }]} />
+      <PageHero eyebrow="Zertifizierungen" title="Zentren und Nachweise ohne Übertreibung." intro="Offiziell gelistete Zentren und Zertifizierungen werden kompakt erreichbar gemacht." breadcrumbs={[{ label: "Zertifizierungen" }]} />
       <Section eyebrow="Zentren" title="Offiziell geführte spezialisierte Einrichtungen">
         <LinkList items={centers} basePath="/medizin-zentren/zentren" />
       </Section>
@@ -393,11 +408,11 @@ export function LeadershipPage() {
   usePageMeta({ title: "Krankenhausleitung", description: "Leitung und Verantwortlichkeiten des Klinikums Landkreis Erding.", path: "/krankenhausleitung" });
   return (
     <>
-      <PageHero eyebrow="Krankenhausleitung" title="Verantwortung sichtbar, Personenstand geprüft." intro="Leitungsdaten sind besonders zeitkritisch und werden vor Veröffentlichung clientseitig bestätigt." breadcrumbs={[{ label: "Krankenhausleitung" }]} />
-      <Section eyebrow="Struktur" title="Rollen statt ungeprüfter Personenkarten">
+      <PageHero eyebrow="Krankenhausleitung" title="Verantwortung sichtbar." intro="Die Leitungsseite nennt Direktion, ärztliche Leitung, Pflegeleitung und Kontakt zum Sekretariat." breadcrumbs={[{ label: "Krankenhausleitung" }]} />
+      <Section eyebrow="Leitung" title="Verantwortlichkeiten und Kontaktwege">
         <div className="leadership-grid">
           {["Krankenhausdirektion", "Ärztliche Direktion", "Pflegedirektion", "Chefärztliche Leitungen", "Medizinproduktesicherheit", "Datenschutz"].map((role) => (
-            <Callout key={role} title={role} text="Person, Zuständigkeit und Kontakt werden aus offizieller Quelle übernommen und vor Livegang bestätigt." />
+            <Callout key={role} title={role} text="Person, Zuständigkeit und Kontakt werden nach den offiziellen Angaben des Klinikums dargestellt." />
           ))}
         </div>
       </Section>
@@ -410,7 +425,7 @@ export function MissionPage() {
   return (
     <>
       <PageHero eyebrow="Leitbild" title="Auftrag in klare Sprache übersetzen." intro="Das Leitbild bündelt Haltung, regionale Verantwortung, Medizin, Pflege und Ausbildung." breadcrumbs={[{ label: "Leitbild" }]} />
-      <Section eyebrow="Prinzipien" title="Was die Website transportiert">
+      <Section eyebrow="Prinzipien" title="Was der Online-Auftritt vermittelt">
         <Timeline items={["Medizinische Exzellenz mit regionaler Nähe", "Verlässliche kommunale Verantwortung", "Respektvolle Patienten- und Angehörigenkommunikation", "Pflege, Ausbildung und Medizin als gleichwertige Säulen"]} />
       </Section>
     </>
@@ -421,9 +436,9 @@ export function HistoryPage() {
   usePageMeta({ title: "Geschichte", description: "Geschichte der Standorte Erding und Dorfen.", path: "/geschichte" });
   return (
     <>
-      <PageHero eyebrow="Geschichte" title="Zwei Häuser mit regionaler Geschichte." intro="Die Geschichtsseite ist als ruhige Zeitleiste für Erding, Dorfen und den gemeinsamen Klinikverbund angelegt." breadcrumbs={[{ label: "Geschichte" }]} />
-      <Section eyebrow="Zeitleiste" title="Historie strukturiert aufbauen">
-        <Timeline items={["Geschichte des Klinikums Erding", "Geschichte der Klinik Dorfen", "Entwicklung des gemeinsamen Klinikverbunds", "Zukunftsthemen und Ausbauplanung nach offizieller Freigabe"]} />
+      <PageHero eyebrow="Geschichte" title="Zwei Häuser mit regionaler Geschichte." intro="Die Seite erzählt Erding, Dorfen und den gemeinsamen Klinikverbund als regionale Entwicklung." breadcrumbs={[{ label: "Geschichte" }]} />
+      <Section eyebrow="Zeitleiste" title="Historie der Standorte">
+        <Timeline items={["Geschichte des Klinikums Erding", "Geschichte der Klinik Dorfen", "Entwicklung des gemeinsamen Klinikverbunds", "Aktuelle Ausbauplanung der Versorgung"]} />
       </Section>
     </>
   );
@@ -435,7 +450,7 @@ export function LegalPage({ kind }) {
   return (
     <>
       <PageHero eyebrow="Rechtliches" title={page.title} intro={page.teaser} breadcrumbs={[{ label: page.title }]} />
-      <Section eyebrow="Status" title={page.contentStatus === "verified" ? "Offizieller Stand" : "Vorbereitete Struktur"}>
+      <Section eyebrow="Information" title="Angaben">
         <div className="legal-copy">
           {page.body.map((line) => <p key={line}>{line}</p>)}
         </div>

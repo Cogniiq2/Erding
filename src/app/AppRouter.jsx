@@ -1,6 +1,7 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import SiteLayout from "../components/SiteLayout.jsx";
+import { reportMissingContent } from "../content/siteContent.js";
 
 const HomePage = lazy(() => import("../pages/HomePage.jsx"));
 const MedicalIndexPage = lazy(() => import("../pages/MedicalIndexPage.jsx"));
@@ -40,6 +41,10 @@ function Fallback() {
 }
 
 export default function AppRouter() {
+  useEffect(() => {
+    reportMissingContent();
+  }, []);
+
   return (
     <Suspense fallback={<Fallback />}>
       <Routes>

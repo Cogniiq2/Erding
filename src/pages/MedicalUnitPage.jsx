@@ -8,15 +8,16 @@ export default function MedicalUnitPage({ type }) {
   const { slug } = useParams();
   const collection = type === "center" ? centers : medicalUnits;
   const item = bySlug(collection, slug);
-
-  if (!item) return <Navigate to="/medizin-zentren" replace />;
-
-  const path = `/medizin-zentren/${type === "center" ? "zentren" : "fachabteilungen"}/${item.slug}`;
+  const path = item
+    ? `/medizin-zentren/${type === "center" ? "zentren" : "fachabteilungen"}/${item.slug}`
+    : "/medizin-zentren";
   usePageMeta({
-    title: item.title,
-    description: item.teaser,
+    title: item?.title || "Medizin & Zentren",
+    description: item?.teaser || "Fachabteilungen und Zentren des Klinikums Landkreis Erding.",
     path,
   });
+
+  if (!item) return <Navigate to="/medizin-zentren" replace />;
 
   return (
     <>
@@ -50,24 +51,24 @@ export default function MedicalUnitPage({ type }) {
       </Section>
 
       {item.services?.length ? (
-        <Section eyebrow="Leistungsspektrum" title="Was bereits strukturiert abgebildet ist">
+        <Section eyebrow="Leistungsspektrum" title="Schwerpunkte dieser Seite">
           <div className="slot-grid">
             {item.services.map((service) => (
               <article className="slot-card" key={service}>
                 <h3>{service}</h3>
-                <p>Als geprüfter Inhaltsbaustein im medizinischen Profil geführt.</p>
+                <p>Teil des medizinischen Profils dieses Bereichs.</p>
               </article>
             ))}
           </div>
         </Section>
       ) : null}
 
-      <Section eyebrow="Vorbereitung" title="Vor Kontakt oder Termin">
+      <Section eyebrow="Unterlagen" title="Vor Kontakt oder Termin">
         <div className="content-grid">
           <Callout title="Mitbringen" text="Für planbare Kontakte helfen vollständige Unterlagen und aktuelle medizinische Informationen.">
             <Checklist items={["Versichertenkarte", "Überweisung oder Einweisung, falls vorhanden", "Aktuelle Befunde", "Medikamentenplan"]} />
           </Callout>
-          <Callout title="Sprechstunden und Team" text="Team-, Leitungs- und Sprechstundeninformationen sind zeitkritisch. Sichtbar werden nur freigegebene Inhalte." />
+          <Callout title="Sprechstunden und Team" text="Aktuelle Team- und Sprechstundenangaben bitte direkt über den offiziellen Kontaktweg klären." />
         </div>
       </Section>
 

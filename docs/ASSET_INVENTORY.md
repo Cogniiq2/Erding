@@ -8,13 +8,35 @@ No authorized production photography, logos, maps, PDFs or media assets were fou
 
 ## QA Screenshots Added
 
+- `docs/screenshots/404-1440.png`
+- `docs/screenshots/aktuelles-1440.png`
+- `docs/screenshots/department-detail-gyn-1440.png`
+- `docs/screenshots/home-full-1440.png`
 - `docs/screenshots/home-390.png`
 - `docs/screenshots/home-1440.png`
 - `docs/screenshots/home-helix-1440.png`
 - `docs/screenshots/home-ecg-1440.png`
 - `docs/screenshots/home-cell-core-1440.png`
+- `docs/screenshots/home-signature-cell-1440.png`
+- `docs/screenshots/home-signature-core-1440.png`
+- `docs/screenshots/home-signature-ecg-1440.png`
+- `docs/screenshots/home-signature-helix-1440.png`
+- `docs/screenshots/home-top-1440.png`
+- `docs/screenshots/karriere-1440.png`
+- `docs/screenshots/legal-barrierefreiheit-1440.png`
+- `docs/screenshots/legal-datenschutz-1440.png`
+- `docs/screenshots/legal-impressum-1440.png`
 - `docs/screenshots/medizin-390.png`
+- `docs/screenshots/medizin-index-1440.png`
+- `docs/screenshots/menu-desktop-1440.png`
+- `docs/screenshots/menu-mobile-390.png`
 - `docs/screenshots/notfall-1440.png`
+- `docs/screenshots/patienten-1440.png`
+- `docs/screenshots/standort-erding-1440.png`
+- `docs/screenshots/treatment-finder-desktop.png`
+- `docs/screenshots/treatment-finder-mobile.png`
+
+All screenshot evidence files were regenerated as true PNG files on 2026-07-18.
 
 ## Required Official Assets
 

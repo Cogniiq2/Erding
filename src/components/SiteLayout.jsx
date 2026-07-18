@@ -116,7 +116,7 @@ export default function SiteLayout() {
       </header>
 
       {searchOpen && (
-        <div className="search-overlay" role="dialog" aria-modal="true" aria-label="Website-Suche">
+        <div className="search-overlay" role="dialog" aria-modal="true" aria-label="Seitensuche">
           <div className="wrap search-panel">
             <div className="dialog-top">
               <h2>Suche</h2>

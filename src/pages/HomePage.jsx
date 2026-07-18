@@ -152,7 +152,7 @@ export default function HomePage() {
       <Section eyebrow="Profil" title="Medizinische Autorität mit regionaler Glaubwürdigkeit">
         <EditorialSplit
           title="Ein Klinikum für den Landkreis, nicht für eine abstrakte Zielgruppe."
-          text="Die Website stellt praktische Wege, fachliche Tiefe und institutionelle Verantwortung nach vorne. Design und Sprache bleiben ruhig, präzise und menschlich."
+          text="Der digitale Wegweiser stellt praktische Wege, fachliche Tiefe und institutionelle Verantwortung nach vorne. Design und Sprache bleiben ruhig, präzise und menschlich."
           aside={<FactGrid facts={verifiedFacts} />}
         />
       </Section>
@@ -202,17 +202,17 @@ export default function HomePage() {
 
       <Section className="ink-band" eyebrow="Innovation" title="Medizinische Entwicklung sichtbar, aber faktentreu">
         <div className="innovation-row">
-          <RailCard tone="gold" eyebrow="Robotik" title="Dexter und neue OP-Verfahren" text="Als Innovationsfläche vorbereitet; Veröffentlichung erst mit aktueller offizieller Freigabe." to="/digitalisierung" />
-          <RailCard tone="gold" eyebrow="Digital" title="Patientenportal" text="Digitale Services werden als eigener Weg geführt, ohne noch nicht produktive Funktionen vorzutäuschen." to="/patienten-besucher/patientenportal-digitale-services" />
-          <RailCard tone="gold" eyebrow="Planung" title="Kinderklinik" text="Die Kinderklinik bleibt als redaktionell zu bestätigendes Zukunftsthema markiert." to="/aktuelles" />
+          <RailCard tone="gold" eyebrow="Robotik" title={news[1].title} text={news[1].teaser} to="/aktuelles" />
+          <RailCard tone="gold" eyebrow="Digital" title={news[3].title} text={news[3].teaser} to="/patienten-besucher/patientenportal-digitale-services" />
+          <RailCard tone="gold" eyebrow="Versorgung" title={news[0].title} text={news[0].teaser} to="/aktuelles" />
         </div>
       </Section>
 
-      <Section eyebrow="Qualität" title="Vertrauen entsteht aus Nachweisen, Struktur und Ansprechbarkeit">
+      <Section eyebrow="Qualität" title="Vertrauen entsteht aus Nachweisen und Ansprechbarkeit">
         <div className="quality-band">
           <div>
             <h3>Zentren und Zertifizierungen</h3>
-            <p>Die offiziellen Zentren werden als prüfbare Struktur sichtbar gemacht. Einzelne Nachweise, Laufzeiten und Zertifikatsdokumente brauchen finale Freigabe.</p>
+            <p>Zentren, Zertifizierungen und Qualitätsberichte werden klar auffindbar gemacht, damit Patientinnen und Patienten offizielle Nachweise schnell erreichen.</p>
             <Link className="button" to="/zertifizierungen">Zertifizierungen ansehen</Link>
           </div>
           <div>
@@ -225,15 +225,15 @@ export default function HomePage() {
 
       <Section eyebrow="Digitale Services" title="Digitaler Zugang mit ehrlichen Grenzen">
         <EditorialSplit
-          title="Ein Patient:innenportal darf kein Scheinformular sein."
-          text="Der digitale Bereich beschreibt Orientierung, Support und Datenschutzanforderungen, bis konkrete Portal-Funktionen und Backendprozesse freigegeben sind."
-          aside={<Checklist items={["Kein medizinischer Notfall per Formular", "Klare Telefonwege", "Datenschutzfreigabe vor Aktivierung"]} />}
+          title="Ein Patientenportal braucht klare Wege."
+          text="Der digitale Bereich zeigt den offiziellen Einstieg, benennt telefonische Alternativen und hält medizinische Notfälle konsequent außerhalb digitaler Formularwege."
+          aside={<Checklist items={["Kein medizinischer Notfall per Formular", "Klare Telefonwege", "Schulter-Sprechstunde als erster digitaler Einstieg"]} />}
         >
           <Link className="button" to="/digitalisierung">Digitalisierung ansehen</Link>
         </EditorialSplit>
       </Section>
 
-      <Section eyebrow="Aktuelles & Termine" title="Nachrichten und Veranstaltungen nur mit sauberer Freigabe">
+      <Section eyebrow="Aktuelles & Termine" title="Nachrichten und Veranstaltungen aus offizieller Quelle">
         <div className="card-grid two">
           <RailCard eyebrow={news[0].category} title={news[0].title} text={news[0].teaser} to="/aktuelles" />
           <RailCard eyebrow={events[0].category} title={events[0].title} text={events[0].teaser} to="/veranstaltungen" />
@@ -247,7 +247,7 @@ export default function HomePage() {
             <p>Geburtsplanung, Sprechstunden, Kurse, Babysprechstunde und Brustzentrum erhalten eine eigene Informationsarchitektur ohne klischeehafte Farbwelt.</p>
             <Link className="button primary" to="/medizin-zentren/fachabteilungen/gynaekologie-geburtshilfe">Frauenklinik öffnen</Link>
           </div>
-          <Timeline items={["Geburtsplanung vorbereiten", "Infoabend oder Kurs prüfen", "Aufnahme und Kreißsaalweg klären", "Nachsorge und Babysprechstunde finden"]} />
+          <Timeline items={["Geburtsplanung klären", "Infoabend oder Kurs prüfen", "Aufnahme und Kreißsaalweg klären", "Nachsorge und Babysprechstunde finden"]} />
         </div>
       </Section>
 
@@ -263,7 +263,7 @@ export default function HomePage() {
         <div className="career-panel">
           <div>
             <h3>Jobs, Ausbildung, Praktikum und Entwicklung</h3>
-            <p>Freie Stellen werden nicht erfunden. Die Seite führt zum offiziellen Karriereportal und strukturiert Berufswege im Klinikum.</p>
+            <p>Konkrete Stellenangebote kommen aus dem offiziellen Karriereportal; die Seite ergänzt Berufswege, Ausbildung und Entwicklung im Klinikum.</p>
           </div>
           <div className="tag-row">
             {careerTopics.slice(0, 6).map((topic) => (

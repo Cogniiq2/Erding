@@ -46,7 +46,7 @@ There is no `package.json`, Vite entry HTML, router, content layer, build config
 - Content is hardcoded in arrays/constants: `T`, `DEPTS`, `SPRECH`, `NEWS`, `SYS_PROMPT`.
 - No content has source IDs.
 - Some statements match official sources, including 330 beds, 12 pain day-clinic places, 100% Landkreis ownership, TU Munich teaching hospital status, address, visit times, and Gyn contact data.
-- Some statements are not verified in the current audit and must be moved behind `CONTENT-NEEDED`, especially future-looking/news claims and broad claims like "zertifizierte Onkologie" where the exact official wording is not present in the checked source snippets.
+- Some statements were not verified in the initial audit and needed source-review flags, especially future-looking/news claims and broad claims like "zertifizierte Onkologie" where the exact official wording was not present in the checked source snippets.
 - The demo mixes German/English strings but does not provide scalable i18n.
 
 ## 7. Accessibility Findings
@@ -78,6 +78,6 @@ There is no `package.json`, Vite entry HTML, router, content layer, build config
 - Keep React, Vite, and Three.js.
 - Replace the monolithic page with a route-based app shell.
 - Preserve the signature helix as `SignatureHelix`, isolated from content and layout.
-- Build content modules with source references and `CONTENT-NEEDED` markers.
+- Build content modules with source references and source-review flags.
 - Provide reusable page templates for medical units, centers, services, career, about, legal, news, and events.
 - Add metadata management, JSON-LD, skip link, route focus, reduced-motion, and keyboard-safe navigation.

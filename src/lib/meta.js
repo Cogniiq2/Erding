@@ -36,7 +36,7 @@ export function usePageMeta({ title, description = defaultDescription, path = "/
     setMeta("og:title", fullTitle, "property");
     setMeta("og:description", description, "property");
     setMeta("og:url", url, "property");
-    setMeta("og:type", "website", "property");
+    setMeta("og:type", "article", "property");
     setMeta("og:site_name", site.name, "property");
     setMeta("twitter:title", fullTitle);
     setMeta("twitter:description", description);

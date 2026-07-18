@@ -16,7 +16,7 @@
   - Helix remains meaningful as a static signature frame.
   - CSS transitions and pulse animation stop under `prefers-reduced-motion`.
 - Content governance:
-  - Replace every `CONTENT-NEEDED` item with official source-backed content.
+  - Replace every source-review item with official source-backed content.
   - Keep source IDs on hard facts.
 - SEO:
   - Verify route titles/descriptions in browser devtools.
@@ -30,6 +30,6 @@
 
 ## Current Known Limits
 
-- News and events are structural only until official content is connected.
-- Legal pages are structural only until final legal copy is supplied.
+- News and events should be refreshed against official sources before launch.
+- Legal pages still need final legal review.
 - The AI assistant from the original demo is deliberately not wired as a browser-side external API call; production requires a backend boundary.
